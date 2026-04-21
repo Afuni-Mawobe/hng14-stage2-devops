@@ -24,11 +24,15 @@ jobs:
 
       - name: pipeline_compose_up_in_ci
         run: |
-          # Build specifically for Trivy first
           docker build -t api-test:latest ./api
-          # Run compose check
+          # Provide dummy env vars for the compose run
+          export REDIS_PASSWORD=password123
+          export REDIS_HOST=redis
+          export REDIS_PORT=6379
           docker compose build
           docker compose up -d
+          # Give it a few seconds to settle
+          sleep 10
           docker compose ps
           docker compose down
 
