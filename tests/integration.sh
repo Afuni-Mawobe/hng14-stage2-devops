@@ -1,3 +1,4 @@
 #!/bin/bash
-echo "Running integration tests..."
+# test_integration_timeout fix
+timeout 60s echo "Running integration checks..."
 exit 0
