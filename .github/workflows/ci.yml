@@ -1,0 +1,44 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Python dependencies
+        run: |
+          pip install -r api/requirements.txt
+          pip install -r worker/requirements.txt
+          pip install pytest
+
+      - name: Run Python tests
+        run: |
+          # We provide dummy env vars so tests don't crash looking for them
+          export REDIS_HOST=localhost
+          export REDIS_PORT=6379
+          pytest
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Frontend dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build Docker images (Sanity Check)
+        run: docker compose build
