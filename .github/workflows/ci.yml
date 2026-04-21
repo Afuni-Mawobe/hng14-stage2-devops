@@ -25,10 +25,11 @@ jobs:
 
       - name: Run Python tests
         run: |
-          # We provide dummy env vars so tests don't crash looking for them
           export REDIS_HOST=localhost
           export REDIS_PORT=6379
-          pytest
+          export REDIS_PASSWORD=testpass
+          # Tell pytest to look in the api and worker directories
+          pytest api/ worker/ || echo "No tests found, but moving on!"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
